@@ -24,7 +24,7 @@ const Field = ({ label, type = 'text', placeholder, value, onChange, error }) =>
 );
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', role: 'operator' });
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const RegisterPage = () => {
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setLoading(true);
     try {
-      await API.post('/auth/register', { name: form.name, email: form.email, password: form.password, role: form.role });
+      await API.post('/auth/register', { name: form.name, email: form.email, password: form.password });
       toast.success('Account created! Please sign in.');
       navigate('/login');
     } catch (err) {
@@ -78,7 +78,11 @@ const RegisterPage = () => {
         <div className="login-logo">
           <div className="login-logo-icon">⚡</div>
           <div className="login-title">Create Account</div>
-          <div className="login-sub">Join PowerBill Electricity Billing System</div>
+          <div className="login-sub">Register as a new electricity customer</div>
+        </div>
+
+        <div style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8, padding: '10px 14px', marginBottom: 18, fontSize: 12, color: '#94a3b8' }}>
+          ℹ️ After registration, an admin will verify and activate your connection. You'll be notified once active.
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -98,20 +102,6 @@ const RegisterPage = () => {
             placeholder="you@example.com"
             error={errors.email}
           />
-
-          <div className="form-group">
-            <label className="form-label">Role</label>
-            <select className="form-control" value={form.role} onChange={e => set('role', e.target.value)}>
-              <option value="operator">Operator — can manage customers, readings, bills</option>
-              <option value="admin">Admin — full access including user management</option>
-              <option value="viewer">Viewer — read-only access</option>
-            </select>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>
-              {form.role === 'admin'    && '🔑 Admin has full system access including reports and tariff config.'}
-              {form.role === 'operator' && '⚙️ Operators can manage day-to-day billing operations.'}
-              {form.role === 'viewer'   && '👁 Viewers can browse data but cannot make changes.'}
-            </div>
-          </div>
 
           <div className="form-row">
             <Field

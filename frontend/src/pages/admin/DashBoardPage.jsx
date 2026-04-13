@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import Topbar from '../components/layout/Topbar';
-import API from '../utils/api';
+import Topbar from '../../components/layout/Topbar';
+import API from '../../utils/api';
 
 const fmtCurrency = (n) => `₹${Number(n || 0).toLocaleString('en-IN')}`;
 

@@ -17,7 +17,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('ebs_token', data.token);
       localStorage.setItem('ebs_user', JSON.stringify(data.user));
       setUser(data.user);
-      return { success: true };
+      // Return role so caller can redirect to the right dashboard
+      return { success: true, role: data.user.role };
     } catch (err) {
       return { success: false, message: err.response?.data?.message || 'Login failed' };
     } finally {
@@ -25,10 +26,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password, role) => {
+  const register = async (name, email, password) => {
     setLoading(true);
     try {
-      await API.post('/auth/register', { name, email, password, role });
+      await API.post('/auth/register', { name, email, password });
       return { success: true };
     } catch (err) {
       return { success: false, message: err.response?.data?.message || 'Registration failed' };
@@ -43,8 +44,13 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const getDashboardPath = (role) => {
+    if (role === 'customer') return '/customer/dashboard';
+    return '/dashboard'; // admin, operator, viewer
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, getDashboardPath }}>
       {children}
     </AuthContext.Provider>
   );

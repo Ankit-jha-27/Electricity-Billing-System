@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true, minlength: 6, select: false },
-  role: { type: String, enum: ['admin', 'operator', 'viewer'], default: 'operator' },
+  role: { type: String, enum: ['admin', 'operator', 'viewer', 'customer'], default: 'customer' },
+  // Only populated when role === 'customer' — links to their Customer record
+  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', default: null },
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 

@@ -3,58 +3,103 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Sidebar from './components/layout/Sidebar';
+import CustomerSidebar from './components/layout/CustomerSidebar';
 import './index.css';
 
-
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
+// Public pages
+import LandingPage  from './pages/LandingPage';
+import LoginPage    from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import CustomersPage from './pages/CustomersPage';
-import ReadingsPage from './pages/ReadingsPage';
-import BillsPage from './pages/BillsPage';
-import TariffsPage from './pages/TariffsPage';
-import ReportsPage from './pages/ReportsPage';
 
-// Only logged-in users can access this route
+// Admin pages
+import AdminDashboard  from './pages/admin/DashboardPage';
+import CustomersPage   from './pages/admin/CustomersPage';
+import ReadingsPage    from './pages/admin/ReadingsPage';
+import BillsPage       from './pages/admin/BillsPage';
+import TariffsPage     from './pages/admin/TariffsPage';
+import ReportsPage     from './pages/admin/ReportsPage';
+
+// Customer pages
+import CustomerDashboard from './pages/customer/CustomerDashboard';
+import CustomerBills     from './pages/customer/CustomerBills';
+import CustomerReadings  from './pages/customer/CustomerReadings';
+import CustomerProfile   from './pages/customer/CustomerProfile';
+
+// ── Route guards ──────────────────────────────────────────────
+
+// Redirect unauthenticated users to /login
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" replace />;
 };
 
-// Logged-in users are redirected away from auth pages
-const GuestRoute = ({ children }) => {
+// Admin/operator only — customers get bounced to their own dashboard
+const AdminRoute = ({ children }) => {
   const { user } = useAuth();
-  return user ? <Navigate to="/dashboard" replace /> : children;
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === 'customer') return <Navigate to="/customer/dashboard" replace />;
+  return children;
 };
 
-const AppLayout = ({ children }) => (
+// Customer only — admins get bounced to admin dashboard
+const CustomerRoute = ({ children }) => {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role !== 'customer') return <Navigate to="/dashboard" replace />;
+  return children;
+};
+
+// Redirect already-logged-in users away from auth pages
+const GuestRoute = ({ children }) => {
+  const { user, getDashboardPath } = useAuth();
+  return user ? <Navigate to={getDashboardPath(user.role)} replace /> : children;
+};
+
+// ── Layouts ───────────────────────────────────────────────────
+
+const AdminLayout = ({ children }) => (
   <div className="layout">
     <Sidebar />
     <div className="main-content">{children}</div>
   </div>
 );
 
+const CustomerLayout = ({ children }) => (
+  <div className="layout">
+    <CustomerSidebar />
+    <div className="main-content">{children}</div>
+  </div>
+);
+
+// ── Routes ────────────────────────────────────────────────────
+
 const AppRoutes = () => {
-  const { user } = useAuth();
+  const { user, getDashboardPath } = useAuth();
+
   return (
     <Routes>
-      
-      <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />} />
+      {/* Landing — public */}
+      <Route path="/" element={user ? <Navigate to={getDashboardPath(user.role)} replace /> : <LandingPage />} />
 
-      
+      {/* Auth — guests only */}
       <Route path="/login"    element={<GuestRoute><LoginPage /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
 
-      {/* Protected app pages */}
-      <Route path="/dashboard" element={<PrivateRoute><AppLayout><DashboardPage /></AppLayout></PrivateRoute>} />
-      <Route path="/customers" element={<PrivateRoute><AppLayout><CustomersPage /></AppLayout></PrivateRoute>} />
-      <Route path="/readings"  element={<PrivateRoute><AppLayout><ReadingsPage /></AppLayout></PrivateRoute>} />
-      <Route path="/bills"     element={<PrivateRoute><AppLayout><BillsPage /></AppLayout></PrivateRoute>} />
-      <Route path="/tariffs"   element={<PrivateRoute><AppLayout><TariffsPage /></AppLayout></PrivateRoute>} />
-      <Route path="/reports"   element={<PrivateRoute><AppLayout><ReportsPage /></AppLayout></PrivateRoute>} />
+      {/* ── Admin / Operator routes ── */}
+      <Route path="/dashboard" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
+      <Route path="/customers" element={<AdminRoute><AdminLayout><CustomersPage /></AdminLayout></AdminRoute>} />
+      <Route path="/readings"  element={<AdminRoute><AdminLayout><ReadingsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/bills"     element={<AdminRoute><AdminLayout><BillsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/tariffs"   element={<AdminRoute><AdminLayout><TariffsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/reports"   element={<AdminRoute><AdminLayout><ReportsPage /></AdminLayout></AdminRoute>} />
 
-      
+      {/* ── Customer routes ── */}
+      <Route path="/customer/dashboard" element={<CustomerRoute><CustomerLayout><CustomerDashboard /></CustomerLayout></CustomerRoute>} />
+      <Route path="/customer/bills"     element={<CustomerRoute><CustomerLayout><CustomerBills /></CustomerLayout></CustomerRoute>} />
+      <Route path="/customer/readings"  element={<CustomerRoute><CustomerLayout><CustomerReadings /></CustomerLayout></CustomerRoute>} />
+      <Route path="/customer/profile"   element={<CustomerRoute><CustomerLayout><CustomerProfile /></CustomerLayout></CustomerRoute>} />
+
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -70,7 +115,7 @@ export default function App() {
           toastOptions={{
             style: { background: '#111827', color: '#e2e8f0', border: '1px solid #1e2d45' },
             success: { iconTheme: { primary: '#10b981', secondary: '#111827' } },
-            error: { iconTheme: { primary: '#ef4444', secondary: '#111827' } },
+            error:   { iconTheme: { primary: '#ef4444', secondary: '#111827' } },
           }}
         />
       </BrowserRouter>
