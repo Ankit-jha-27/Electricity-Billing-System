@@ -156,7 +156,7 @@ const LandingPage = () => {
           <span style={{ fontSize: 15 }}>⚡</span>
           <span style={{ fontSize: 13, fontWeight: 600, fontFamily: 'Syne, sans-serif' }}>PowerBill EBS</span>
         </div>
-        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>MERN Stack · MongoDB · Express · React · Node.js</div>
+        <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{new Date().toDateString()}</div>
         <div style={{ display: 'flex', gap: 16, fontSize: 12, color: 'var(--text-muted)' }}>
           <span style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>Sign In</span>
           <span style={{ cursor: 'pointer' }} onClick={() => navigate('/register')}>Register</span>
