@@ -28,6 +28,7 @@ app.use('/api/tariffs',         require('./routes/tariffRoutes'));
 app.use('/api/reports',         require('./routes/reportRoutes'));
 app.use('/api/dashboard',       require('./routes/dashboardRoutes'));
 app.use('/api/customer',        require('./routes/customerPortalRoutes'));
+app.use('/api/registrations',   require('./routes/registrationRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', timestamp: new Date() }));

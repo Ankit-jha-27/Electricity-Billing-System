@@ -56,16 +56,6 @@ const LoginPage = () => {
         <div style={{textAlign:'center', marginTop:10, fontSize:13}}>
           <Link to="/" style={{color:'var(--text-muted)', textDecoration:'none'}}>← Back to home</Link>
         </div>
-
-        <div style={{marginTop:24,padding:'14px',background:'rgba(245,158,11,0.08)',borderRadius:8,border:'1px solid rgba(245,158,11,0.2)'}}>
-          <div style={{fontSize:11,color:'#64748b',marginBottom:6,textTransform:'uppercase',letterSpacing:'0.5px',fontWeight:600}}>Demo Credentials</div>
-          <div style={{fontSize:12,color:'#94a3b8',cursor:'pointer',marginBottom:3}} onClick={() => setForm({email:'admin@ebs.com',password:'admin123'})}>
-            🔑 Admin: admin@ebs.com / admin123 <span style={{color:'#f59e0b'}}>(click to fill)</span>
-          </div>
-          <div style={{fontSize:12,color:'#94a3b8',cursor:'pointer'}} onClick={() => setForm({email:'operator@ebs.com',password:'operator123'})}>
-            ⚙️ Operator: operator@ebs.com / operator123 <span style={{color:'#f59e0b'}}>(click to fill)</span>
-          </div>
-        </div>
       </div>
     </div>
   );

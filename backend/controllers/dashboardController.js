@@ -1,6 +1,7 @@
-const Customer = require('../models/Customer');
-const Bill = require('../models/Bill');
-const Reading = require('../models/Reading');
+const Customer     = require('../models/Customer');
+const Bill         = require('../models/Bill');
+const Reading      = require('../models/Reading');
+const Registration = require('../models/Registration');
 
 exports.getDashboardStats = async (req, res) => {
   try {
@@ -13,6 +14,7 @@ exports.getDashboardStats = async (req, res) => {
       recentBills,
       monthlyRevenue,
       pendingReadings,
+      pendingRegistrations,
     ] = await Promise.all([
       Customer.countDocuments(),
       Customer.countDocuments({ connectionStatus: 'Active' }),
@@ -31,6 +33,7 @@ exports.getDashboardStats = async (req, res) => {
         { $limit: 6 },
       ]),
       Reading.countDocuments({ status: 'Pending' }),
+      Registration.countDocuments({ status: 'pending' }),
     ]);
 
     const totalRevenue = await Bill.aggregate([
@@ -52,6 +55,7 @@ exports.getDashboardStats = async (req, res) => {
         unpaidBills,
         overdueB,
         pendingReadings,
+        pendingRegistrations,
         totalRevenue: totalRevenue[0]?.total || 0,
         pendingRevenue: pendingRevenue[0]?.total || 0,
         recentBills,

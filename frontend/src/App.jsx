@@ -12,12 +12,13 @@ import LoginPage    from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
 // Admin pages
-import AdminDashboard  from './pages/admin/DashboardPage';
-import CustomersPage   from './pages/admin/CustomersPage';
-import ReadingsPage    from './pages/admin/ReadingsPage';
-import BillsPage       from './pages/admin/BillsPage';
-import TariffsPage     from './pages/admin/TariffsPage';
-import ReportsPage     from './pages/admin/ReportsPage';
+import AdminDashboard     from './pages/admin/DashboardPage';
+import CustomersPage      from './pages/admin/CustomersPage';
+import ReadingsPage       from './pages/admin/ReadingsPage';
+import BillsPage          from './pages/admin/BillsPage';
+import TariffsPage        from './pages/admin/TariffsPage';
+import ReportsPage        from './pages/admin/ReportsPage';
+import RegistrationsPage  from './pages/admin/RegistrationsPage';
 
 // Customer pages
 import CustomerDashboard from './pages/customer/CustomerDashboard';
@@ -86,12 +87,13 @@ const AppRoutes = () => {
       <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
 
       {/* ── Admin / Operator routes ── */}
-      <Route path="/dashboard" element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
-      <Route path="/customers" element={<AdminRoute><AdminLayout><CustomersPage /></AdminLayout></AdminRoute>} />
-      <Route path="/readings"  element={<AdminRoute><AdminLayout><ReadingsPage /></AdminLayout></AdminRoute>} />
-      <Route path="/bills"     element={<AdminRoute><AdminLayout><BillsPage /></AdminLayout></AdminRoute>} />
-      <Route path="/tariffs"   element={<AdminRoute><AdminLayout><TariffsPage /></AdminLayout></AdminRoute>} />
-      <Route path="/reports"   element={<AdminRoute><AdminLayout><ReportsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/dashboard"     element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
+      <Route path="/registrations" element={<AdminRoute><AdminLayout><RegistrationsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/customers"     element={<AdminRoute><AdminLayout><CustomersPage /></AdminLayout></AdminRoute>} />
+      <Route path="/readings"      element={<AdminRoute><AdminLayout><ReadingsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/bills"         element={<AdminRoute><AdminLayout><BillsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/tariffs"       element={<AdminRoute><AdminLayout><TariffsPage /></AdminLayout></AdminRoute>} />
+      <Route path="/reports"       element={<AdminRoute><AdminLayout><ReportsPage /></AdminLayout></AdminRoute>} />
 
       {/* ── Customer routes ── */}
       <Route path="/customer/dashboard" element={<CustomerRoute><CustomerLayout><CustomerDashboard /></CustomerLayout></CustomerRoute>} />

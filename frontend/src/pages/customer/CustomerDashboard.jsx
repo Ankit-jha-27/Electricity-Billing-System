@@ -34,12 +34,92 @@ const CustomerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // If the user has no linked Customer record yet, their application is pending
+  const isPending = !user?.customerId;
+
   useEffect(() => {
+    // Don't hit the API if still pending — there's nothing to fetch
+    if (isPending) { setLoading(false); return; }
     API.get('/customer/me')
       .then(r => setData(r.data.data))
       .catch(err => setError(err.response?.data?.message || 'Failed to load your data'))
       .finally(() => setLoading(false));
-  }, []);
+  }, [isPending]);
+
+  // ── Pending approval screen ───────────────────────────────────
+  if (isPending) return (
+    <>
+      <Topbar title="My Dashboard" subtitle="Customer Portal" />
+      <div className="page-content">
+        <div style={{
+          maxWidth: 560,
+          margin: '40px auto',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-light)',
+          borderRadius: 16,
+          padding: 40,
+          textAlign: 'center',
+        }}>
+          {/* Animated clock icon */}
+          <div style={{
+            width: 80, height: 80, borderRadius: '50%',
+            background: 'rgba(245,158,11,0.12)',
+            border: '2px solid rgba(245,158,11,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 24px',
+            fontSize: 36,
+          }}>
+            ⏳
+          </div>
+
+          <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 22, marginBottom: 12 }}>
+            Application Under Review
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
+            Your connection request has been submitted successfully. Our team is reviewing your application and will assign a meter number and activate your connection shortly.
+          </p>
+
+          {/* Steps */}
+          <div style={{ textAlign: 'left', marginBottom: 28 }}>
+            {[
+              { icon: '✅', label: 'Application submitted',         done: true  },
+              { icon: '🔍', label: 'Admin review in progress',      done: false, active: true },
+              { icon: '⚡', label: 'Meter assigned & connection activated', done: false },
+              { icon: '🧾', label: 'Start receiving bills',         done: false },
+            ].map((step, i) => (
+              <div key={i} style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '10px 14px', borderRadius: 8, marginBottom: 6,
+                background: step.active ? 'rgba(245,158,11,0.08)' : step.done ? 'rgba(16,185,129,0.06)' : 'transparent',
+                border: step.active ? '1px solid rgba(245,158,11,0.2)' : '1px solid transparent',
+              }}>
+                <div style={{
+                  width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+                  background: step.done ? 'var(--green-dim)' : step.active ? 'rgba(245,158,11,0.15)' : 'var(--bg)',
+                  border: `1px solid ${step.done ? 'var(--green)' : step.active ? 'var(--accent)' : 'var(--border)'}`,
+                }}>
+                  {step.done ? '✓' : step.active ? '●' : String(i + 1)}
+                </div>
+                <span style={{
+                  fontSize: 13,
+                  fontWeight: step.active ? 700 : 500,
+                  color: step.done ? 'var(--green)' : step.active ? 'var(--accent)' : 'var(--text-muted)',
+                }}>
+                  {step.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: 'var(--bg)', borderRadius: 8, padding: '12px 16px', fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.6 }}>
+            📧 You're registered as <strong style={{ color: 'var(--text)' }}>{user?.email}</strong>.
+            Once activated, this dashboard will automatically show your meter readings, bills, and payment history.
+          </div>
+        </div>
+      </div>
+    </>
+  );
 
   if (loading) return (
     <div className="loading-state">

@@ -1,33 +1,31 @@
-const User = require('../models/User');
-const Customer = require('../models/Customer');
+const User         = require('../models/User');
+const Registration = require('../models/Registration');
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone, connectionType, address, message, role } = req.body;
+
+    // Check duplicate email in both User and Registration
     const exists = await User.findOne({ email });
     if (exists) return res.status(400).json({ success: false, message: 'Email already registered' });
 
-    // Public registration always creates a customer role user.
-    // Admin/operator accounts must be created via seeder or by an existing admin.
-    const user = await User.create({ name, email, password, role: 'customer' });
+    // 1. Create login credentials
+    const user = await User.create({ name, email, password, role});
 
-    // Auto-create a Customer record linked to this user account
-    const customer = await Customer.create({
+    // 2. Create a pending registration request for admin review
+    await Registration.create({
+      user:  user._id,
       name,
       email,
-      phone: 'N/A',
-      meterNumber: `MTR-${user._id.toString().slice(-6).toUpperCase()}`,
-      connectionType: 'Domestic',
-      connectionStatus: 'Inactive', // admin activates after verification
+      phone:          phone || '',
+      connectionType: connectionType || 'Domestic',
+      address:        address || {},
+      message:        message || '',
     });
-
-    // Link the user to their customer record
-    user.customerId = customer._id;
-    await user.save();
 
     res.status(201).json({
       success: true,
-      message: 'Account created. Your connection will be activated after verification.',
+      message: 'Registration submitted. An admin will review and activate your connection shortly.',
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -49,10 +47,10 @@ exports.login = async (req, res) => {
       success: true,
       token,
       user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
+        id:         user._id,
+        name:       user.name,
+        email:      user.email,
+        role:       user.role,
         customerId: user.customerId || null,
       },
     });
