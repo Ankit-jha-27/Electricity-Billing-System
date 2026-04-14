@@ -56,7 +56,7 @@ const GuestRoute = ({ children }) => {
   return user ? <Navigate to={getDashboardPath(user.role)} replace /> : children;
 };
 
-// ── Layouts ───────────────────────────────────────────────────
+// Layouts
 
 const AdminLayout = ({ children }) => (
   <div className="layout">
@@ -72,14 +72,14 @@ const CustomerLayout = ({ children }) => (
   </div>
 );
 
-// ── Routes ────────────────────────────────────────────────────
+// Routes 
 
 const AppRoutes = () => {
   const { user, getDashboardPath } = useAuth();
 
   return (
     <Routes>
-      {/* Landing — public */}
+      {/* Landing */}
       <Route path="/" element={user ? <Navigate to={getDashboardPath(user.role)} replace /> : <LandingPage />} />
 
       {/* Auth — guests only */}

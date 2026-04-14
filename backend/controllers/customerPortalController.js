@@ -2,7 +2,7 @@ const Customer = require('../models/Customer');
 const Bill = require('../models/Bill');
 const Reading = require('../models/Reading');
 
-// GET /api/customer/me — full profile + stats for the logged-in customer
+// GET /api/customer/me
 exports.getMyProfile = async (req, res) => {
   try {
     if (!req.user.customerId)
@@ -21,7 +21,6 @@ exports.getMyProfile = async (req, res) => {
       ]),
     ]);
 
-    // Units consumed this month
     const thisMonth = new Date().toISOString().slice(0, 7);
     const thisReading = readings.find(r => r.readingMonth === thisMonth);
 
@@ -45,7 +44,7 @@ exports.getMyProfile = async (req, res) => {
   }
 };
 
-// GET /api/customer/bills — paginated bills for this customer only
+// GET /api/customer/bills
 exports.getMyBills = async (req, res) => {
   try {
     if (!req.user.customerId)
@@ -67,7 +66,7 @@ exports.getMyBills = async (req, res) => {
   }
 };
 
-// GET /api/customer/readings — readings for this customer
+// GET /api/customer/readings
 exports.getMyReadings = async (req, res) => {
   try {
     if (!req.user.customerId)
@@ -75,6 +74,52 @@ exports.getMyReadings = async (req, res) => {
 
     const readings = await Reading.find({ customer: req.user.customerId }).sort({ readingDate: -1 }).limit(12);
     res.json({ success: true, data: readings });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+// POST /api/customer/bills/:id/pay
+// Customer pays their own bill via UPI QR. Body: { transactionId, upiId? }
+exports.payMyBill = async (req, res) => {
+  try {
+    if (!req.user.customerId)
+      return res.status(403).json({ success: false, message: 'No customer record linked' });
+
+    const bill = await Bill.findById(req.params.id);
+    if (!bill)
+      return res.status(404).json({ success: false, message: 'Bill not found' });
+
+    // Security: customer can only pay their own bills
+    if (bill.customer.toString() !== req.user.customerId.toString())
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+    if (bill.paymentStatus === 'Paid')
+      return res.status(400).json({ success: false, message: 'Bill is already paid' });
+
+    const { transactionId } = req.body;
+    if (!transactionId || !transactionId.trim())
+      return res.status(400).json({ success: false, message: 'UPI Transaction ID is required to confirm payment' });
+
+    // Record the payment
+    bill.amountPaid     = bill.totalAmount;
+    bill.balanceDue     = 0;
+    bill.paymentStatus  = 'Paid';
+    bill.paymentMode    = 'UPI';
+    bill.transactionId  = transactionId.trim();
+    bill.paymentDate    = new Date();
+    await bill.save();
+
+    // Clear customer outstanding balance
+    await Customer.findByIdAndUpdate(req.user.customerId, {
+      $inc: { outstandingBalance: -bill.totalAmount }
+    });
+
+    res.json({
+      success: true,
+      message: 'Payment confirmed successfully!',
+      data: bill,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

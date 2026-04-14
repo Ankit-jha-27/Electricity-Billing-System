@@ -14,7 +14,7 @@ const stats = [
   { value: '4', label: 'Connection types' },
   { value: 'CSV', label: 'Export format' },
   { value: '100%', label: 'Web-based' },
-  { value: 'MERN', label: 'Tech stack' },
+  { value: 'Reports', label: 'Filter & Export' },
 ];
 
 const LandingPage = () => {
@@ -51,7 +51,7 @@ const LandingPage = () => {
 
         <div style={{ position: 'relative', maxWidth: 720, margin: '0 auto' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 20, padding: '5px 14px', marginBottom: 28, fontSize: 12, color: '#f59e0b', fontWeight: 600 }}>
-            ⚡ Electricity Billing System — MERN Stack
+            ⚡ Electricity Billing System
           </div>
           <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: 'clamp(36px, 6vw, 60px)', fontWeight: 800, lineHeight: 1.1, marginBottom: 22, background: 'linear-gradient(135deg, #f1f5f9 30%, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Manage Electricity<br />Billing the Smart Way
