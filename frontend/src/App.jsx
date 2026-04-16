@@ -12,7 +12,7 @@ import LoginPage    from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
 // Admin pages
-import AdminDashboard     from './pages/admin/DashboardPage';
+import AdminDashboard     from './pages/admin/DashBoardPage';
 import CustomersPage      from './pages/admin/CustomersPage';
 import ReadingsPage       from './pages/admin/ReadingsPage';
 import BillsPage          from './pages/admin/BillsPage';
