@@ -7,7 +7,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://powerbill-backend.onrender.com',
+        target: 'https://electricity-billing-system-yar7.onrender.com',
         changeOrigin: true,
       },
     },
