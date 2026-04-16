@@ -80,7 +80,6 @@ exports.getMyReadings = async (req, res) => {
 };
 
 // POST /api/customer/bills/:id/pay
-// Customer pays their own bill via UPI QR. Body: { transactionId, upiId? }
 exports.payMyBill = async (req, res) => {
   try {
     if (!req.user.customerId)
@@ -90,36 +89,29 @@ exports.payMyBill = async (req, res) => {
     if (!bill)
       return res.status(404).json({ success: false, message: 'Bill not found' });
 
-    // Security: customer can only pay their own bills
     if (bill.customer.toString() !== req.user.customerId.toString())
       return res.status(403).json({ success: false, message: 'Unauthorized' });
 
     if (bill.paymentStatus === 'Paid')
       return res.status(400).json({ success: false, message: 'Bill is already paid' });
 
-    const { transactionId } = req.body;
-    if (!transactionId || !transactionId.trim())
-      return res.status(400).json({ success: false, message: 'UPI Transaction ID is required to confirm payment' });
+    // Auto-generate a reference ID — customer doesn't need to enter UTR
+    const autoRef = 'UPI' + Date.now() + Math.random().toString(36).slice(2, 6).toUpperCase();
 
-    // Record the payment
-    bill.amountPaid     = bill.totalAmount;
-    bill.balanceDue     = 0;
-    bill.paymentStatus  = 'Paid';
-    bill.paymentMode    = 'UPI';
-    bill.transactionId  = transactionId.trim();
-    bill.paymentDate    = new Date();
+    bill.amountPaid    = bill.totalAmount;
+    bill.balanceDue    = 0;
+    bill.paymentStatus = 'Paid';
+    bill.paymentMode   = 'UPI';
+    bill.transactionId = req.body.transactionId?.trim() || autoRef;
+    bill.paymentDate   = new Date();
     await bill.save();
 
-    // Clear customer outstanding balance
+    // Update customer outstanding balance
     await Customer.findByIdAndUpdate(req.user.customerId, {
-      $inc: { outstandingBalance: -bill.totalAmount }
+      $inc: { outstandingBalance: -bill.totalAmount },
     });
 
-    res.json({
-      success: true,
-      message: 'Payment confirmed successfully!',
-      data: bill,
-    });
+    res.json({ success: true, message: 'Payment confirmed!', data: bill });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

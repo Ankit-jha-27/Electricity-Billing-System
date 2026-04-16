@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Topbar from '../../components/layout/Topbar';
@@ -37,14 +37,20 @@ const CustomerDashboard = () => {
   // If the user has no linked Customer record yet, their application is pending
   const isPending = !user?.customerId;
 
-  useEffect(() => {
-    // Don't hit the API if still pending — there's nothing to fetch
+  const fetchData = useCallback(() => {
     if (isPending) { setLoading(false); return; }
     API.get('/customer/me')
       .then(r => setData(r.data.data))
       .catch(err => setError(err.response?.data?.message || 'Failed to load your data'))
       .finally(() => setLoading(false));
   }, [isPending]);
+
+  useEffect(() => {
+    fetchData();
+    // Listen for payment events fired by CustomerBills after a successful pay
+    window.addEventListener('bill-paid', fetchData);
+    return () => window.removeEventListener('bill-paid', fetchData);
+  }, [fetchData]);
 
   // ── Pending approval screen ───────────────────────────────────
   if (isPending) return (

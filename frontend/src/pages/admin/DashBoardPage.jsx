@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Topbar from '../../components/layout/Topbar';
 import API from '../../utils/api';
@@ -35,9 +35,16 @@ const DashboardPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const fetchStats = useCallback(() => {
     API.get('/dashboard').then(r => setData(r.data.data)).finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    fetchStats();
+    // Re-fetch whenever a customer completes a UPI payment
+    window.addEventListener('bill-paid', fetchStats);
+    return () => window.removeEventListener('bill-paid', fetchStats);
+  }, [fetchStats]);
 
   if (loading) return <div className="loading-state"><div className="spinner"/><span>Loading dashboard...</span></div>;
 
