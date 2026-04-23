@@ -67,7 +67,7 @@ electricity-billing/
 cd backend
 npm install
 cp .env
-# Edit .env — set MONGO_URI and JWT_SECRET
+- Edit .env — set MONGO_URI and JWT_SECRET
 node server.js      # Starts on http://localhost:5000
 
 
