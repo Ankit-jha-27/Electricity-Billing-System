@@ -69,7 +69,7 @@ electricity-billing/
     │
     └── package.json
 ```
-
+DATABASE SCRIPT IS IN /backend/models
 ---
 
 ## ⚙️ Prerequisites
