@@ -1,4 +1,4 @@
-#FOLDER STRUCTURE
+# FOLDER STRUCTURE
 
 electricity-billing/
 ├── backend/                    # Node.js + Express API
@@ -60,9 +60,14 @@ electricity-billing/
 
 
 
+# Prerequisites
+
+Node.js v18+
+MongoDB (local or Atlas)
 
 
-#BACKEND SETUP
+
+# BACKEND SETUP
     
 cd backend
 npm install
@@ -71,7 +76,7 @@ cp .env
 node server.js      # Starts on http://localhost:5000
 
 
-#FRONTEND SETUP
+# FRONTEND SETUP
 
 cd frontend
 npm install
