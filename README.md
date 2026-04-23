@@ -18,7 +18,7 @@ electricity-billing/
 │   ├── middleware/
 │   │   └── auth.js             # JWT protect + authorize
 │
-│   ├── models/
+│   ├── models/                 # 📌 Database Schemas (Mongoose)
 │   │   ├── User.js
 │   │   ├── Customer.js
 │   │   ├── Reading.js
@@ -69,7 +69,18 @@ electricity-billing/
     │
     └── package.json
 ```
-DATABASE SCRIPT IS IN /backend/models
+
+---
+
+## 🗄️ Database
+
+All database schemas are located in:
+
+```
+/backend/models
+```
+
+
 ---
 
 ## ⚙️ Prerequisites
@@ -84,7 +95,7 @@ DATABASE SCRIPT IS IN /backend/models
 ```
 cd backend
 npm install
-cp .env.example .env   # (recommended naming)
+cp .env.example .env
 # Edit .env → set MONGO_URI and JWT_SECRET
 node server.js
 ```
