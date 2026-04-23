@@ -1,10 +1,11 @@
-# FOLDER STRUCTURE
+## 📁 Folder Structure
 
+```
 electricity-billing/
 ├── backend/                    # Node.js + Express API
 │   ├── config/
-│   │   ├── db.js               # MongoDB connection
-│   │            
+│   │   └── db.js               # MongoDB connection
+│   │
 │   ├── controllers/
 │   │   ├── authController.js
 │   │   ├── customerController.js
@@ -13,14 +14,17 @@ electricity-billing/
 │   │   ├── tariffController.js
 │   │   ├── reportController.js
 │   │   └── dashboardController.js
+│
 │   ├── middleware/
 │   │   └── auth.js             # JWT protect + authorize
+│
 │   ├── models/
 │   │   ├── User.js
 │   │   ├── Customer.js
 │   │   ├── Reading.js
 │   │   ├── Bill.js
 │   │   └── Tariff.js
+│
 │   ├── routes/
 │   │   ├── authRoutes.js
 │   │   ├── customerRoutes.js
@@ -29,6 +33,7 @@ electricity-billing/
 │   │   ├── tariffRoutes.js
 │   │   ├── reportRoutes.js
 │   │   └── dashboardRoutes.js
+│
 │   ├── .env
 │   ├── package.json
 │   └── server.js
@@ -36,13 +41,16 @@ electricity-billing/
 └── frontend/                   # React App
     ├── public/
     │   └── index.html
+    │
     ├── src/
     │   ├── components/
     │   │   └── layout/
     │   │       ├── Sidebar.js
     │   │       └── Topbar.js
+    │   │
     │   ├── context/
     │   │   └── AuthContext.js
+    │   │
     │   ├── pages/
     │   │   ├── LoginPage.js
     │   │   ├── DashboardPage.js
@@ -51,33 +59,46 @@ electricity-billing/
     │   │   ├── BillsPage.js
     │   │   ├── TariffsPage.js
     │   │   └── ReportsPage.js
+    │   │
     │   ├── utils/
     │   │   └── api.js          # Axios instance
+    │   │
     │   ├── App.js
     │   ├── index.js
     │   └── index.css
+    │
     └── package.json
+```
 
+---
 
+## ⚙️ Prerequisites
 
-# Prerequisites
+* Node.js v18+
+* MongoDB (local or Atlas)
 
-Node.js v18+
-MongoDB (local or Atlas)
+---
 
+## 🚀 Backend Setup
 
-
-# BACKEND SETUP
-    
+```
 cd backend
 npm install
-cp .env
-- Edit .env — set MONGO_URI and JWT_SECRET
-node server.js      # Starts on http://localhost:5000
+cp .env.example .env   # (recommended naming)
+# Edit .env → set MONGO_URI and JWT_SECRET
+node server.js
+```
 
+👉 Runs on: http://localhost:5000
 
-# FRONTEND SETUP
+---
 
+## 💻 Frontend Setup
+
+```
 cd frontend
 npm install
-npm run dev        # Starts on http://localhost:3000
+npm run dev
+```
+
+👉 Runs on: http://localhost:3000
