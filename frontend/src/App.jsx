@@ -26,7 +26,6 @@ import CustomerBills     from './pages/customer/CustomerBills';
 import CustomerReadings  from './pages/customer/CustomerReadings';
 import CustomerProfile   from './pages/customer/CustomerProfile';
 
-// ── Route guards ──────────────────────────────────────────────
 
 // Redirect unauthenticated users to /login
 const PrivateRoute = ({ children }) => {
@@ -56,7 +55,7 @@ const GuestRoute = ({ children }) => {
   return user ? <Navigate to={getDashboardPath(user.role)} replace /> : children;
 };
 
-// Layouts
+
 
 const AdminLayout = ({ children }) => (
   <div className="layout">
@@ -79,14 +78,14 @@ const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* Landing */}
+      
       <Route path="/" element={user ? <Navigate to={getDashboardPath(user.role)} replace /> : <LandingPage />} />
 
       {/* Auth — guests only */}
       <Route path="/login"    element={<GuestRoute><LoginPage /></GuestRoute>} />
       <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
 
-      {/* ── Admin / Operator routes ── */}
+      {/*  Admin routes  */}
       <Route path="/dashboard"     element={<AdminRoute><AdminLayout><AdminDashboard /></AdminLayout></AdminRoute>} />
       <Route path="/registrations" element={<AdminRoute><AdminLayout><RegistrationsPage /></AdminLayout></AdminRoute>} />
       <Route path="/customers"     element={<AdminRoute><AdminLayout><CustomersPage /></AdminLayout></AdminRoute>} />
@@ -95,13 +94,13 @@ const AppRoutes = () => {
       <Route path="/tariffs"       element={<AdminRoute><AdminLayout><TariffsPage /></AdminLayout></AdminRoute>} />
       <Route path="/reports"       element={<AdminRoute><AdminLayout><ReportsPage /></AdminLayout></AdminRoute>} />
 
-      {/* ── Customer routes ── */}
+      {/* Customer routes  */}
       <Route path="/customer/dashboard" element={<CustomerRoute><CustomerLayout><CustomerDashboard /></CustomerLayout></CustomerRoute>} />
       <Route path="/customer/bills"     element={<CustomerRoute><CustomerLayout><CustomerBills /></CustomerLayout></CustomerRoute>} />
       <Route path="/customer/readings"  element={<CustomerRoute><CustomerLayout><CustomerReadings /></CustomerLayout></CustomerRoute>} />
       <Route path="/customer/profile"   element={<CustomerRoute><CustomerLayout><CustomerProfile /></CustomerLayout></CustomerRoute>} />
 
-      {/* Fallback */}
+      
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
