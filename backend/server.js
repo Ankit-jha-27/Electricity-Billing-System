@@ -10,12 +10,22 @@ const app = express();
 
 const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'https://electricity-billing-system-ruddy.vercel.app'];
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS blocked: ${origin}`));
+  origin: function (origin, callback) {
+    if (
+      !origin ||
+      origin.includes('vercel.app') ||
+      origin.includes('localhost')
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
   },
   credentials: true,
 }));
+
+app.options('*', cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
