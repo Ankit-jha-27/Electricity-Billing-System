@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const { data } = await API.post('/auth/login', { email, password });
+      const { data } = await API.post('/api/auth/login', { email, password });
       localStorage.setItem('ebs_token', data.token);
       localStorage.setItem('ebs_user', JSON.stringify(data.user));
       setUser(data.user);
