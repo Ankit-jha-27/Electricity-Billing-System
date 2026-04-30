@@ -8,7 +8,7 @@ connectDB();
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'https://electricity-billing-system-ruddy.vercel.app'];
+
 app.use(cors({
   origin: function (origin, callback) {
     if (
@@ -24,7 +24,7 @@ app.use(cors({
   credentials: true,
 }));
 
-app.options('*', cors());
+app.options(/.*/, cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
